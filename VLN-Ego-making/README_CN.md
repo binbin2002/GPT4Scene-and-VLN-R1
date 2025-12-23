@@ -166,3 +166,14 @@ python r2r_rxr_dataset_convert_sft \
  }
 
 ```
+
+
+# 自定义修改数据集 2025.12.13
+
+1. 添加了VLN-Ego数据集深度图的获取。
+2. 构建数据集不再预先加载模型，能够自定义深度度大小。
+
+主要修改地方：
+1. VLN-Ego-making/habitat_extensions/config/vlnce_task.yaml 添加了深度传感器
+2. VLN-Ego-making/vlnce_baselines/config/r2r_baselines/r2r_vln-ego-making.yaml 修改了部分内容
+3. VLN-Ego-making/vlnce_baselines/recollect_trainer.py  不再加载预先模型，而是直接进行数据集iter
