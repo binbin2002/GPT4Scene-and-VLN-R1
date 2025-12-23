@@ -313,14 +313,14 @@ def get_config(
     if config_paths:
         if isinstance(config_paths, str):
             if CONFIG_FILE_SEPARATOR in config_paths:
-                config_paths = config_paths.split(CONFIG_FILE_SEPARATOR)
+                config_paths = config_paths.split(CONFIG_FILE_SEPARATOR) #使用分隔符分割多个配置文件路径
             else:
                 config_paths = [config_paths]
 
         prev_task_config = ""
         for config_path in config_paths:
             config.merge_from_file(config_path)
-            if config.BASE_TASK_CONFIG_PATH != prev_task_config:
+            if config.BASE_TASK_CONFIG_PATH != prev_task_config: #如果基本任务配置路径发生变化，则重新加载任务配置
                 config.TASK_CONFIG = get_task_config(
                     config.BASE_TASK_CONFIG_PATH
                 )

@@ -10,7 +10,7 @@ RESULTS_DIR: data/checkpoints/cma/evals
 
 EVAL:
   USE_CKPT_CONFIG: False
-  SPLIT: val_unseen
+  SPLIT: train
   EPISODE_COUNT: -1
 
 IL:
@@ -18,14 +18,20 @@ IL:
   batch_size: 30
 
   RECOLLECT_TRAINER:
+    only_collect: True
+    generate_only: True        # 新增，确保跳过模型初始化
     # gt_file:
     #   data/datasets/R2R_VLNCE_v1-3_preprocessed/{split}/{split}_gt.json.gz
     # trajectories_file: data/trajectories_dirs/r2r/trajectories.json.gz
     # RGB_SAVE_DIR: ./rgb_images_r2r_eval
-    gt_file:
-      data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train_gt.json.gz
+    gt_file: /media/yang/T7/navid/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train_gt.json.gz
     RGB_SAVE_DIR: ./VLN-Ego/rgb_images_r2r_train
     preload_size: 50
+    # 新增：保存深度与位姿
+    SAVE_DEPTH: True
+    DEPTH_SAVE_DIR: ./VLN-Ego/depth_images_r2r_train
+    SAVE_POSE: True
+    POSE_SAVE_DIR: ./VLN-Ego/pose_r2r_train
 
   DAGGER:
     iterations: 1
@@ -37,6 +43,10 @@ IL:
 
 MODEL:
   policy_name: CMAPolicy
+  # 为避免误加载权重，确保不设置预训练
+  VISUAL_ENCODER:
+    pretrained_weights: NONE
 
   INSTRUCTION_ENCODER:
     bidirectional: True
+

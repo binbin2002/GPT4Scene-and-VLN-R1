@@ -23,7 +23,7 @@ IL:
     # trajectories_file: data/trajectories_dirs/r2r/trajectories.json.gz
     # RGB_SAVE_DIR: ./rgb_images_r2r_eval
     gt_file:
-      data/datasets/R2R_VLNCE_v1-3_preprocessed/val_seen/val_seen_gt.json.gz
+      # data/datasets/R2R_VLNCE_v1-3_preprocessed/val_seen/val_seen_gt.json.gz
     RGB_SAVE_DIR: ./rgb_images_r2r_val_seen
     preload_size: 50
 

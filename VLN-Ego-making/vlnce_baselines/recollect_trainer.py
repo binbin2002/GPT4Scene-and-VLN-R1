@@ -22,7 +22,7 @@ from vlnce_baselines.dagger_trainer import collate_fn
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=FutureWarning)
-    import tensorflow as tf  # noqa: F401
+    # import tensorflow as tf  # noqa: F401
 
 
 @baseline_registry.register_trainer(name="recollect_trainer")
@@ -73,8 +73,9 @@ class RecollectTrainer(BaseVLNCETrainer):
             -1
         )
         self.config.freeze()
-
+        
         dataset = TeacherRecollectionDataset(self.config)
+        
         diter = iter(
             torch.utils.data.DataLoader(
                 dataset,
@@ -86,6 +87,24 @@ class RecollectTrainer(BaseVLNCETrainer):
                 num_workers=1,
             )
         )
+
+
+
+        # 新增：只生成数据集，跳过模型加载
+        if getattr(self.config.IL.RECOLLECT_TRAINER, "generate_only", False) \
+            or getattr(self.config.IL.RECOLLECT_TRAINER, "only_collect", False):
+            AuxLosses.activate()
+            batches_per_epoch = dataset.length // dataset.batch_size
+            t = (
+                tqdm.trange(batches_per_epoch, leave=False, dynamic_ncols=True)
+                if self.config.use_pbar else range(batches_per_epoch)
+            )
+            for _ in t:
+                _ = next(diter)  # 触发数据收集与写入（RGB/Depth/POSE/轨迹等）
+            AuxLosses.deactivate()
+            dataset.close_sims()
+            return
+
 
         self._initialize_policy(
             self.config,
